@@ -4,7 +4,6 @@
 #include <BranchesWidget.h>
 #include <CommitHistoryColumns.h>
 #include <CommitInfo.h>
-#include <ConfigData.h>
 #include <ConfigWidget.h>
 #include <Controls.h>
 #include <DiffWidget.h>
@@ -13,13 +12,10 @@
 #include <GitConfig.h>
 #include <GitConfigDlg.h>
 #include <GitHistory.h>
-#include <GitHubRestApi.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
 #include <GitQlientSettings.h>
 #include <GitRepoLoader.h>
-#include <GitServerCache.h>
-#include <GitServerWidget.h>
 #include <GitSubmodules.h>
 #include <GitTags.h>
 #include <GitWip.h>
@@ -28,7 +24,12 @@
 #include <MergeWidget.h>
 #include <QLogger.h>
 #include <WaitingDlg.h>
-
+/* TODO: Enable conditionally
+#include <ConfigData.h>
+#include <GitHubRestApi.h>
+#include <GitServerCache.h>
+#include <GitServerWidget.h>
+*/
 #include <QApplication>
 #include <QDirIterator>
 #include <QFileDialog>
@@ -47,7 +48,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
                              QWidget *parent)
    : QFrame(parent)
    , mGitQlientCache(new GitCache())
-   , mGitServerCache(new GitServerCache())
    , mGitBase(git)
    , mSettings(settings)
    , mGitLoader(new GitRepoLoader(mGitBase, mGitQlientCache, mSettings))
@@ -57,7 +57,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    , mDiffWidget(new DiffWidget(mGitBase, mGitQlientCache))
    , mBlameWidget(new BlameWidget(mGitQlientCache, mGitBase, mSettings))
    , mMergeWidget(new MergeWidget(mGitQlientCache, mGitBase))
-   , mGitServerWidget(new GitServerWidget(mGitQlientCache, mGitBase, mGitServerCache))
    , mJenkins(new JenkinsWidget(mGitBase))
    , mConfigWidget(new ConfigWidget(mGitBase))
    , mAutoFetch(new QTimer())
@@ -73,17 +72,27 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    setObjectName("mainWindow");
    setWindowTitle("GitQlient");
 
-   QScopedPointer<GitConfig> gitConfig(new GitConfig(mGitBase));
-   const auto serverUrl = gitConfig->getServerUrl();
-   const auto repoInfo = gitConfig->getCurrentRepoAndOwner();
-
-   mGitServerCache->init(serverUrl, repoInfo);
-
    mStackedLayout->addWidget(mHistoryWidget);
    mStackedLayout->addWidget(mDiffWidget);
    mStackedLayout->addWidget(mBlameWidget);
    mStackedLayout->addWidget(mMergeWidget);
+
+   /* TODO: Enable conditionally
+   QScopedPointer<GitConfig> gitConfig(new GitConfig(mGitBase));
+   const auto serverUrl = gitConfig->getServerUrl();
+   const auto repoInfo = gitConfig->getCurrentRepoAndOwner();
+
+   mGitServerCache = new GitServerCache();
+   mGitServerCache->init(serverUrl, repoInfo);
+
+   mGitServerWidget = new GitServerWidget(mGitQlientCache, mGitBase, mGitServerCache);
    mStackedLayout->addWidget(mGitServerWidget);
+   connect(mControls, &Controls::signalGoServer, this, &GitQlientRepo::showGitServerView);
+   connect(mHistoryWidget, &HistoryWidget::showPrDetailedView, this, &GitQlientRepo::showGitServerPrView);
+   connect(mGitServerWidget, &GitServerWidget::openDiff, this, &GitQlientRepo::openCommitDiff);
+   connect(mJenkins, &JenkinsWidget::gotoPullRequest, this, &GitQlientRepo::focusHistoryOnPr);
+   */
+
    mStackedLayout->addWidget(mJenkins);
    mStackedLayout->addWidget(mConfigWidget);
 
@@ -107,7 +116,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    connect(mControls, &Controls::signalGoBlame, this, &GitQlientRepo::showBlameView);
    connect(mControls, &Controls::signalGoDiff, this, &GitQlientRepo::showDiffView);
    connect(mControls, &Controls::signalGoMerge, this, &GitQlientRepo::showMergeView);
-   connect(mControls, &Controls::signalGoServer, this, &GitQlientRepo::showGitServerView);
    connect(mControls, &Controls::signalGoBuildSystem, this, &GitQlientRepo::showBuildSystemView);
    connect(mControls, &Controls::goConfig, this, &GitQlientRepo::showConfig);
    connect(mControls, &Controls::requestReload, this, &GitQlientRepo::updateCache);
@@ -135,7 +143,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    connect(mHistoryWidget, &HistoryWidget::signalPullConflict, mControls, &Controls::activateMergeWarning);
    connect(mHistoryWidget, &HistoryWidget::signalPullConflict, this, &GitQlientRepo::showWarningMerge);
    connect(mHistoryWidget, &HistoryWidget::signalUpdateWip, this, &GitQlientRepo::updateWip);
-   connect(mHistoryWidget, &HistoryWidget::showPrDetailedView, this, &GitQlientRepo::showGitServerPrView);
 
    connect(mDiffWidget, &DiffWidget::signalShowFileHistory, this, &GitQlientRepo::showFileHistory);
    connect(mDiffWidget, &DiffWidget::signalDiffEmpty, mControls, &Controls::disableDiff);
@@ -153,10 +160,7 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    connect(mConfigWidget, &ConfigWidget::panelsVisibilityChaned, mHistoryWidget,
            &HistoryWidget::onPanelsVisibilityChanged);
 
-   connect(mGitServerWidget, &GitServerWidget::openDiff, this, &GitQlientRepo::openCommitDiff);
-
    connect(mJenkins, &JenkinsWidget::gotoBranch, this, &GitQlientRepo::focusHistoryOnBranch);
-   connect(mJenkins, &JenkinsWidget::gotoPullRequest, this, &GitQlientRepo::focusHistoryOnPr);
 
    connect(mGitLoader.data(), &GitRepoLoader::signalLoadingStarted, this, &GitQlientRepo::createProgressDialog);
    connect(mGitLoader.data(), &GitRepoLoader::signalLoadingFinished, this, &GitQlientRepo::onRepoLoadFinished);
@@ -462,7 +466,7 @@ void GitQlientRepo::showMergeView()
    mStackedLayout->setCurrentWidget(mMergeWidget);
    mControls->toggleButton(ControlsMainViews::Merge);
 }
-
+/* TODO: Enable conditionally
 bool GitQlientRepo::configureGitServer() const
 {
    bool isConfigured = false;
@@ -511,6 +515,14 @@ void GitQlientRepo::showGitServerPrView(int prNumber)
    }
 }
 
+void GitQlientRepo::focusHistoryOnPr(int prNumber)
+{
+   const auto pr = mGitServerCache->getPullRequest(prNumber);
+
+   mHistoryWidget->focusOnCommit(pr.state.sha);
+   showHistoryView();
+}
+*/
 void GitQlientRepo::showBuildSystemView()
 {
    mJenkins->reload();
@@ -560,14 +572,6 @@ void GitQlientRepo::focusHistoryOnBranch(const QString &branch)
       QMessageBox::information(
           this, tr("Branch not found"),
           tr("The branch couldn't be found. Please, make sure you fetched and have the latest changes."));
-}
-
-void GitQlientRepo::focusHistoryOnPr(int prNumber)
-{
-   const auto pr = mGitServerCache->getPullRequest(prNumber);
-
-   mHistoryWidget->focusOnCommit(pr.state.sha);
-   showHistoryView();
 }
 
 bool GitQlientRepo::containsSubmodule(const QString &path, const QVector<QString> &submodules)

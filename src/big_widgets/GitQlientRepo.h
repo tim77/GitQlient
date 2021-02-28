@@ -24,8 +24,8 @@
  ***************************************************************************************/
 
 #include <QFrame>
-#include <QThread>
 #include <QPointer>
+#include <QThread>
 
 class GitBase;
 class GitQlientSettings;
@@ -274,19 +274,25 @@ private:
    */
    void showMergeView();
 
-   bool configureGitServer() const;
+   // bool configureGitServer() const;
 
    /**
     * @brief showGitServerView Shows the configured git server view.
     */
-   void showGitServerView();
+   // void showGitServerView();
 
    /**
     * @brief showGitServerPrView Shows the configured git server view opening the details of the pull request identified
     * by the given @p prNumber.
     * @param prNumber The pull request number to show the details.
     */
-   void showGitServerPrView(int prNumber);
+   // void showGitServerPrView(int prNumber);
+
+   /**
+    * @brief focusHistoryOnPr Opens the graph view and focuses on the SHA of the PR number.
+    * @param prNumber The PR to put the focus on.
+    */
+   // void focusHistoryOnPr(int prNumber);
 
    /**
     * @brief showBuildSystemView Shows the build system view.
@@ -312,12 +318,6 @@ private:
     * @param branch The branch.
     */
    void focusHistoryOnBranch(const QString &branch);
-
-   /**
-    * @brief focusHistoryOnPr Opens the graph view and focuses on the SHA of the PR number.
-    * @param prNumber The PR to put the focus on.
-    */
-   void focusHistoryOnPr(int prNumber);
 
    /**
     * @brief containsSubmodule Analyzes a path to see if the path is one of the submodules.

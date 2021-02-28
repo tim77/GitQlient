@@ -1,30 +1,30 @@
 #include "CommitHistoryContextMenu.h"
 
-#include <GitServerCache.h>
-#include <GitQlientStyles.h>
-#include <GitLocal.h>
-#include <GitTags.h>
-#include <GitPatches.h>
-#include <GitBase.h>
-#include <GitStashes.h>
-#include <GitBranches.h>
-#include <GitRemote.h>
 #include <BranchDlg.h>
-#include <TagDlg.h>
 #include <CommitInfo.h>
+#include <GitBase.h>
+#include <GitBranches.h>
 #include <GitCache.h>
+#include <GitLocal.h>
+#include <GitPatches.h>
+#include <GitQlientStyles.h>
+#include <GitRemote.h>
+#include <GitStashes.h>
+#include <GitTags.h>
 #include <PullDlg.h>
-#include <CreateIssueDlg.h>
-#include <CreatePullRequestDlg.h>
-#include <GitHubRestApi.h>
-#include <MergePullRequestDlg.h>
+#include <TagDlg.h>
 
-#include <QMessageBox>
+/* TODO: Enable conditionally
+#include <GitServerCache.h>
+#include <MergePullRequestDlg.h>
+*/
+
 #include <QApplication>
 #include <QClipboard>
-#include <QFileDialog>
-#include <QProcess>
 #include <QDesktopServices>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QProcess>
 
 #include <QLogger.h>
 
@@ -151,6 +151,8 @@ void CommitHistoryContextMenu::createIndividualShaMenu()
       }
    }
 
+   /*
+    * TODO: Enable conditionally
    if (mGitServerCache)
    {
       const auto isGitHub = mGitServerCache->getPlatform() == GitServer::Platform::GitHub;
@@ -190,6 +192,7 @@ void CommitHistoryContextMenu::createIndividualShaMenu()
          gitServerMenu->addSeparator();
       }
    }
+   */
 }
 
 void CommitHistoryContextMenu::createMultipleShasMenu()

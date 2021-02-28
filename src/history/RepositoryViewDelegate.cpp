@@ -1,28 +1,31 @@
 #include "RepositoryViewDelegate.h"
 
-#include <GitServerCache.h>
-#include <GitQlientStyles.h>
+#include <Colors.h>
+#include <CommitHistoryColumns.h>
+#include <CommitHistoryModel.h>
+#include <CommitHistoryView.h>
+#include <CommitInfo.h>
+#include <GitBase.h>
+#include <GitCache.h>
 #include <GitLocal.h>
+#include <GitQlientStyles.h>
 #include <Lane.h>
 #include <LaneType.h>
-#include <CommitInfo.h>
-#include <CommitHistoryColumns.h>
-#include <CommitHistoryView.h>
-#include <CommitHistoryModel.h>
-#include <GitCache.h>
-#include <GitBase.h>
-#include <PullRequest.h>
-#include <Colors.h>
 
-#include <QSortFilterProxyModel>
-#include <QPainter>
-#include <QPainterPath>
-#include <QEvent>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QToolTip>
+/* TODO: Enable conditionally
+#include <GitServerCache.h>
+#include <PullRequest.h>
+*/
+
 #include <QApplication>
 #include <QClipboard>
+#include <QDesktopServices>
+#include <QEvent>
+#include <QPainter>
+#include <QPainterPath>
+#include <QSortFilterProxyModel>
+#include <QToolTip>
+#include <QUrl>
 
 using namespace GitServer;
 
@@ -431,6 +434,7 @@ void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &o
 
    auto offset = 0;
 
+   /* TODO: Enable conditionally
    if (mGitServerCache)
    {
       if (const auto pr = mGitServerCache->getPullRequest(commit.sha()); pr.isValid())
@@ -439,6 +443,7 @@ void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &o
          paintPrStatus(p, opt, offset, pr);
       }
    }
+   */
 
    if (mCache->hasReferences(commit.sha()) && !mView->hasActiveFilter())
    {
@@ -548,6 +553,12 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
 void RepositoryViewDelegate::paintPrStatus(QPainter *painter, QStyleOptionViewItem opt, int &startPoint,
                                            const PullRequest &pr) const
 {
+   Q_UNUSED(painter);
+   Q_UNUSED(opt);
+   Q_UNUSED(startPoint);
+   Q_UNUSED(pr);
+
+   /* TODO: Enable conditionally
    QColor c;
 
    switch (pr.state.eState)
@@ -572,4 +583,5 @@ void RepositoryViewDelegate::paintPrStatus(QPainter *painter, QStyleOptionViewIt
    painter->restore();
 
    startPoint += 10 + 5;
+   */
 }

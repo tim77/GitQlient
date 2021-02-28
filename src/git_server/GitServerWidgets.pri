@@ -26,6 +26,7 @@ HEADERS += \
    $$PWD/PrList.h \
    $$PWD/ServerConfigDlg.h \ \
    $$PWD/SourceCodeReview.h \
+   $$PWD/GitServerWidget.h \
    $$PWD/document.h \
    $$PWD/previewpage.h
 
@@ -47,5 +48,6 @@ SOURCES += \
    $$PWD/PrList.cpp \
    $$PWD/ServerConfigDlg.cpp \
    $$PWD/SourceCodeReview.cpp \
+   $$PWD/GitServerWidget.cpp \
    $$PWD/document.cpp \
    $$PWD/previewpage.cpp

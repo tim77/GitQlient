@@ -6,6 +6,7 @@ HEADERS += \
    $$PWD/ConfigData.h \
    $$PWD/GitHubRestApi.h \
    $$PWD/GitLabRestApi.h \
+   $$PWD/GitServerCache.h \
    $$PWD/IRestApi.h \
    $$PWD/Issue.h \
    $$PWD/Label.h \
@@ -15,6 +16,7 @@ HEADERS += \
    $$PWD/User.h
 
 SOURCES += \
+   $$PWD/GitServerCache.cpp \
    $$PWD/GitHubRestApi.cpp \
    $$PWD/GitLabRestApi.cpp \
    $$PWD/IRestApi.cpp

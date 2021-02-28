@@ -2,9 +2,11 @@
 
 #include <CommitHistoryColumns.h>
 #include <CommitInfo.h>
-#include <GitCache.h>
-#include <GitServerCache.h>
 #include <GitBase.h>
+#include <GitCache.h>
+
+// TODO: Enable conditionally
+//#include <GitServerCache.h>
 
 #include <QDateTime>
 #include <QLocale>
@@ -108,11 +110,13 @@ QVariant CommitHistoryModel::getToolTipData(const CommitInfo &r) const
                   !auxMessage.isEmpty() ? QString("<p>%1</p>").arg(auxMessage) : "",
                   r.isSigned() ? tr("<p>Commit signed!</p><p> GPG key: %1</p>").arg(r.getGpgKey()) : "");
 
+   /* TODO: Enable conditionally
    if (mGitServerCache)
    {
       if (const auto pr = mGitServerCache->getPullRequest(sha); pr.isValid())
          tooltip.append(tr("<p><b>PR state: </b>%1.</p>").arg(pr.state.state));
    }
+   */
 
    return tooltip;
 }
