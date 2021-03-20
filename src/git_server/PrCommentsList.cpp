@@ -1,35 +1,37 @@
 #include "PrCommentsList.h"
 
-#include <GitServerCache.h>
+#include <AvatarHelper.h>
+#include <ButtonLink.hpp>
+#include <CircularPixmap.h>
+#include <CodeReviewComment.h>
 #include <GitHubRestApi.h>
 #include <GitLabRestApi.h>
-#include <CircularPixmap.h>
+#include <GitServerCache.h>
 #include <SourceCodeReview.h>
-#include <AvatarHelper.h>
-#include <CodeReviewComment.h>
-#include <ButtonLink.hpp>
-#include <Colors.h>
 #include <previewpage.h>
-#include <GitQlientSettings.h>
 
-#include <QNetworkAccessManager>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QScrollArea>
 #include <QDir>
 #include <QFile>
-#include <QStandardPaths>
-#include <QNetworkReply>
-#include <QTextEdit>
-#include <QPropertyAnimation>
-#include <QSequentialAnimationGroup>
-#include <QPushButton>
 #include <QIcon>
+#include <QLabel>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QScrollArea>
 #include <QScrollBar>
+#include <QSequentialAnimationGroup>
+#include <QSettings>
+#include <QStandardPaths>
+#include <QTextEdit>
+#include <QVBoxLayout>
 #include <QWebChannel>
 #include <QWebEngineView>
 
 using namespace GitServer;
+
+static constexpr QColor highlightCommentStart(64, 65, 66); //#404142
+static constexpr QColor highlightCommentEnd(96, 97, 98); //#606162
 
 PrCommentsList::PrCommentsList(const QSharedPointer<GitServerCache> &gitServerCache, QWidget *parent)
    : QFrame(parent)
@@ -212,8 +214,8 @@ void PrCommentsList::loadData(PrCommentsList::Config config, int issueNumber)
    const auto bodyDescLayout = new QVBoxLayout(bodyDescFrame);
    bodyDescLayout->setContentsMargins(10, 10, 10, 10);
 
-   GitQlientSettings settings("");
-   const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+   QSettings settings;
+   const auto colorSchema = settings.value("colorSchema", "dark").toString();
    const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
    QPointer<QWebEngineView> body = new QWebEngineView();
@@ -394,8 +396,8 @@ QLayout *PrCommentsList::createBubbleForComment(const Comment &comment)
    creationLayout->addStretch();
    creationLayout->addWidget(new QLabel(comment.association));
 
-   GitQlientSettings settings("");
-   const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+   QSettings settings;
+   const auto colorSchema = settings.value("colorSchema", "dark").toString();
    const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
    const auto doc = new Document(this);

@@ -1,14 +1,14 @@
 #include "GitLabRestApi.h"
-#include <GitQlientSettings.h>
 #include <Issue.h>
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QUrlQuery>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
+#include <QSettings>
 #include <QTimer>
+#include <QUrlQuery>
 
 using namespace GitServer;
 
@@ -22,9 +22,9 @@ GitLabRestApi::GitLabRestApi(const QString &userName, const QString &repoName, c
    if (!userName.isEmpty() && !auth.userName.isEmpty() && !auth.userPass.isEmpty() && !auth.endpointUrl.isEmpty())
    {
       mPreRequisites = 0;
-      GitQlientSettings settings("");
-      mUserId = settings.globalValue(QString("%1/%2-userId").arg(mSettingsKey, mRepoName), "").toString();
-      mRepoId = settings.globalValue(QString("%1/%2-repoId").arg(mSettingsKey, mRepoName), "").toString();
+      QSettings settings;
+      mUserId = settings.value(QString("%1/%2-userId").arg(mSettingsKey, mRepoName), "").toString();
+      mRepoId = settings.value(QString("%1/%2-repoId").arg(mSettingsKey, mRepoName), "").toString();
 
       if (mRepoId.isEmpty())
       {
@@ -235,8 +235,8 @@ void GitLabRestApi::onUserInfoReceived()
 
          mUserId = firstUser.value("id").toString();
 
-         GitQlientSettings settings("");
-         settings.setGlobalValue(QString("%1/%2-userId").arg(mSettingsKey, mRepoName), mUserId);
+         QSettings settings;
+         settings.setValue(QString("%1/%2-userId").arg(mSettingsKey, mRepoName), mUserId);
 
          --mPreRequisites;
 
@@ -274,8 +274,8 @@ void GitLabRestApi::onProjectsReceived()
          {
             mRepoId = labelMap.value("id").toString();
 
-            GitQlientSettings settings("");
-            settings.setGlobalValue(QString("%1/%2-repoId").arg(mSettingsKey, mRepoName), mRepoId);
+            QSettings settings;
+            settings.setValue(QString("%1/%2-repoId").arg(mSettingsKey, mRepoName), mRepoId);
             --mPreRequisites;
 
             if (mPreRequisites == 0 && mTestRequested)

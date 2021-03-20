@@ -1,13 +1,13 @@
 #include "MergePullRequestDlg.h"
 #include "ui_MergePullRequestDlg.h"
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
 #include <GitHubRestApi.h>
 #include <GitLabRestApi.h>
 #include <GitRemote.h>
 
-#include <QMessageBox>
 #include <QJsonDocument>
+#include <QMessageBox>
+#include <QSettings>
 
 using namespace GitServer;
 
@@ -24,11 +24,11 @@ MergePullRequestDlg::MergePullRequestDlg(const QSharedPointer<GitBase> git, cons
    QScopedPointer<GitConfig> gitConfig(new GitConfig(mGit));
    const auto serverUrl = gitConfig->getServerUrl();
 
-   GitQlientSettings settings("");
-   const auto userName = settings.globalValue(QString("%1/user").arg(serverUrl)).toString();
-   const auto userToken = settings.globalValue(QString("%1/token").arg(serverUrl)).toString();
+   QSettings settings;
+   const auto userName = settings.value(QString("%1/user").arg(serverUrl)).toString();
+   const auto userToken = settings.value(QString("%1/token").arg(serverUrl)).toString();
+   const auto endpoint = settings.value(QString("%1/endpoint").arg(serverUrl)).toString();
    const auto repoInfo = gitConfig->getCurrentRepoAndOwner();
-   const auto endpoint = settings.globalValue(QString("%1/endpoint").arg(serverUrl)).toString();
 
    if (serverUrl.contains("github"))
       mApi = new GitHubRestApi(repoInfo.first, repoInfo.second, { userName, userToken, endpoint });

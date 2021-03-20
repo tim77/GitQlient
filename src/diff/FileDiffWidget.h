@@ -23,10 +23,10 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
+#include <DiffHelper.h>
 #include <IDiffWidget.h>
 
 #include <QFrame>
-#include <DiffInfo.h>
 
 class FileDiffView;
 class QPushButton;

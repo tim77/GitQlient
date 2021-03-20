@@ -23,13 +23,13 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include <Milestone.h>
 #include <Label.h>
+#include <Milestone.h>
 #include <PullRequest.h>
 
-#include <QObject>
 #include <QMap>
 #include <QNetworkRequest>
+#include <QObject>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -90,6 +90,13 @@ signals:
    void errorOccurred(const QString &errorStr);
 
    /**
+    * @brief log Signal triggered whenever the module needs to report an error. This signal can be captured by the
+    * users to log the internal messages of the class.
+    * @param message The message.
+    */
+   void log(const QString &message);
+
+   /**
     * @brief paginationPresent Signal triggered when the issues or pull requests are so many that they are sent
     * paginated.
     * @param current The current page.
@@ -144,7 +151,7 @@ public:
 
    virtual QString getUserName() const { return mAuth.userName; }
 
-   static QJsonDocument validateData(QNetworkReply *reply, QString &errorString);
+   virtual QJsonDocument validateData(QNetworkReply *reply, QString &errorString) final;
 
    /**
     * @brief testConnection Tests the connection against the server.

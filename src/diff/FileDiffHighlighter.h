@@ -23,8 +23,9 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
+#include <DiffHelper.h>
+
 #include <QSyntaxHighlighter>
-#include <DiffInfo.h>
 
 /*!
  \brief Overloaded class that adds syntax highlight for the diff view. It shows the additions in green, removals in red

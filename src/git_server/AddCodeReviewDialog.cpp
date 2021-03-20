@@ -1,8 +1,6 @@
 #include "AddCodeReviewDialog.h"
 #include "ui_AddCodeReviewDialog.h"
 
-#include <GitQlientStyles.h>
-
 #include <QMessageBox>
 
 AddCodeReviewDialog::AddCodeReviewDialog(ReviewMode mode, QWidget *parent)
@@ -11,9 +9,6 @@ AddCodeReviewDialog::AddCodeReviewDialog(ReviewMode mode, QWidget *parent)
    , mMode(mode)
 {
    ui->setupUi(this);
-
-   if (!parent)
-      setStyleSheet(GitQlientStyles::getInstance()->getStyles());
 
    switch (mode)
    {

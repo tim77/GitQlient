@@ -1,22 +1,22 @@
 #include "CreatePullRequestDlg.h"
 #include "ui_CreatePullRequestDlg.h"
 
+#include <GitCache.h>
 #include <GitHubRestApi.h>
 #include <GitLabRestApi.h>
-#include <GitQlientSettings.h>
 #include <GitServerCache.h>
-#include <PullRequest.h>
-#include <GitCache.h>
 #include <Issue.h>
-#include <Milestone.h>
 #include <Label.h>
+#include <Milestone.h>
+#include <PullRequest.h>
 
 #include <previewpage.h>
 
-#include <QStandardItemModel>
-#include <QMessageBox>
-#include <QTimer>
 #include <QFile>
+#include <QMessageBox>
+#include <QSettings>
+#include <QStandardItemModel>
+#include <QTimer>
 #include <QWebChannel>
 
 using namespace GitServer;
@@ -69,8 +69,8 @@ bool CreatePullRequestDlg::configure(const QString &workingDir, const QString &c
       const auto fileContent = f.readAll();
       f.close();
 
-      GitQlientSettings settings("");
-      const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+      QSettings settings;
+      const auto colorSchema = settings.value("colorSchema", "dark").toString();
       const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
       PreviewPage *page = new PreviewPage(this);

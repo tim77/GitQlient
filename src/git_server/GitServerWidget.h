@@ -23,8 +23,10 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include <QFrame>
+#include "GitServer_global.h"
+
 #include <ConfigData.h>
+#include <QFrame>
 
 class GitCache;
 class GitBase;
@@ -41,7 +43,7 @@ class IRestApi;
 struct Issue;
 }
 
-class GitServerWidget : public QFrame
+class GITSERVER_EXPORT GitServerWidget : public QFrame
 {
    Q_OBJECT
 

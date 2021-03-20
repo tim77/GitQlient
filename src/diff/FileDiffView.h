@@ -51,8 +51,9 @@
 **
 ****************************************************************************/
 
+#include <DiffHelper.h>
+
 #include <QPlainTextEdit>
-#include <DiffInfo.h>
 
 class FileDiffHighlighter;
 

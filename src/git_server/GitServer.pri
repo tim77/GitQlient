@@ -1,6 +1,9 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+   $$PWD/ButtonLink.hpp \
+   $$PWD/CheckBox.h \
+   $$PWD/ClickableFrame.h \
    $$PWD/Comment.h \
    $$PWD/Commit.h \
    $$PWD/ConfigData.h \
@@ -16,6 +19,9 @@ HEADERS += \
    $$PWD/User.h
 
 SOURCES += \
+   $$PWD/ButtonLink.cpp \
+   $$PWD/CheckBox.cpp \
+   $$PWD/ClickableFrame.cpp \
    $$PWD/GitServerCache.cpp \
    $$PWD/GitHubRestApi.cpp \
    $$PWD/GitLabRestApi.cpp \

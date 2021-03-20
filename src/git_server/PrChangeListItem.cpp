@@ -1,9 +1,9 @@
 #include "PrChangeListItem.h"
 
+#include <AddCodeReviewDialog.h>
 #include <DiffHelper.h>
 #include <FileDiffView.h>
 #include <LineNumberArea.h>
-#include <AddCodeReviewDialog.h>
 
 #include <QGridLayout>
 #include <QLabel>
@@ -94,7 +94,7 @@ void PrChangeListItem::openReviewDialog(int line)
 {
    const auto path = qobject_cast<LineNumberArea *>(sender()) == mNewNumberArea ? mNewFileName : mOldFileName;
 
-   const auto dlg = new AddCodeReviewDialog(ReviewMode::Comment);
+   const auto dlg = new AddCodeReviewDialog(ReviewMode::Comment, this);
    dlg->setWindowFlag(Qt::FramelessWindowHint);
    dlg->setWindowFlag(Qt::Tool);
    dlg->setWindowModality(Qt::ApplicationModal);

@@ -28,7 +28,8 @@ HEADERS += \
    $$PWD/SourceCodeReview.h \
    $$PWD/GitServerWidget.h \
    $$PWD/document.h \
-   $$PWD/previewpage.h
+   $$PWD/previewpage.h \
+   $$PWD/GitServer_global.h
 
 SOURCES += \
    $$PWD/AddCodeReviewDialog.cpp \

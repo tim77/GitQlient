@@ -1,18 +1,15 @@
 #include "GitHubRestApi.h"
 #include <Issue.h>
 
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QTimer>
 #include <QUrlQuery>
 
-#include <QLogger.h>
-
-using namespace QLogger;
 using namespace GitServer;
 
 GitHubRestApi::GitHubRestApi(QString repoOwner, QString repoName, const ServerAuthentication &auth, QObject *parent)
@@ -649,9 +646,10 @@ void GitHubRestApi::onPullRequestStatusReceived(PullRequest pr)
 
       pr.state.state = obj["state"].toString();
 
-      pr.state.eState = pr.state.state == "success" ? PullRequest::HeadState::State::Success
-          : pr.state.state == "failure"             ? PullRequest::HeadState::State::Failure
-                                                    : PullRequest::HeadState::State::Pending;
+      pr.state.eState = pr.state.state == "success"
+          ? PullRequest::HeadState::State::Success
+          : pr.state.state == "failure" ? PullRequest::HeadState::State::Failure
+                                        : PullRequest::HeadState::State::Pending;
 
       const auto statuses = obj["statuses"].toArray();
 

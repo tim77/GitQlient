@@ -23,55 +23,21 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include <QVector>
-#include <QUuid>
-#include <QStringList>
+#include <QCheckBox>
+#include <QStyle>
 
-struct ChunkDiffInfo
+class CheckBox : public QCheckBox
 {
-   struct ChunkInfo
-   {
-#if QT_VERSION <= QT_VERSION_CHECK(5, 13, 0)
-      ChunkInfo() = default;
-#endif
-      ChunkInfo(const QString &_id)
-         : id(_id)
-      {
-      }
-      int startLine = -1;
-      int endLine = -1;
-      bool addition = false;
-      QString id;
+   Q_OBJECT
 
-      bool isValid() const { return startLine != -1 && endLine != -1; }
-   };
+public:
+   explicit CheckBox(QWidget *parent = 0);
+   explicit CheckBox(const QString &text, QWidget *parent = 0);
 
-   ChunkDiffInfo()
-      : newFile(ChunkInfo(id))
-      , oldFile(ChunkInfo(id))
-   {
-   }
-   ChunkDiffInfo(bool baseOld, const ChunkInfo &_newFile, const ChunkInfo &_oldFile)
-      : baseIsOldFile(baseOld)
-      , newFile(_newFile)
-      , oldFile(_oldFile)
-   {
-      newFile.id = id;
-      oldFile.id = id;
-   }
-   bool operator==(const ChunkDiffInfo &info) const { return id == info.id; }
-   bool isValid() const { return newFile.isValid() || oldFile.isValid(); }
+   QString getIndicator(QStyle::State state) const;
 
-   QString id = QUuid::createUuid().toString();
-   bool baseIsOldFile = true;
-   ChunkInfo newFile;
-   ChunkInfo oldFile;
-};
+protected:
+   bool event(QEvent *e);
 
-struct DiffInfo
-{
-   QStringList fullDiff;
-   QStringList newFileDiff;
-   QStringList oldFileDiff;
-   QVector<ChunkDiffInfo> chunks;
+   void paintEvent(QPaintEvent *e);
 };

@@ -1,16 +1,16 @@
 #include <CodeReviewComment.h>
 
-#include <Comment.h>
 #include <AvatarHelper.h>
+#include <Comment.h>
 #include <previewpage.h>
-#include <GitQlientSettings.h>
 
-#include <QVBoxLayout>
-#include <QTextEdit>
 #include <QLabel>
 #include <QLocale>
-#include <QWebEngineView>
+#include <QSettings>
+#include <QTextEdit>
+#include <QVBoxLayout>
 #include <QWebChannel>
+#include <QWebEngineView>
 
 CodeReviewComment::CodeReviewComment(const GitServer::CodeReview &review, QWidget *parent)
    : QFrame(parent)
@@ -28,8 +28,8 @@ CodeReviewComment::CodeReviewComment(const GitServer::CodeReview &review, QWidge
    avatarLayout->addWidget(creator);
    avatarLayout->addStretch();
 
-   GitQlientSettings settings("");
-   const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+   QSettings settings;
+   const auto colorSchema = settings.value("colorSchema", "dark").toString();
    const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
    QPointer<QWebEngineView> body = new QWebEngineView();

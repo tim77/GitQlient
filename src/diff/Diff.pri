@@ -2,7 +2,6 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/DiffHelper.h \
-    $$PWD/DiffInfo.h \
     $$PWD/FileBlameWidget.h \
     $$PWD/FileDiffEditor.h \
     $$PWD/FileDiffHighlighter.h \

@@ -1,9 +1,8 @@
 #include <GitServerCache.h>
 
-#include <GitQlientSettings.h>
-#include <GitConfig.h>
 #include <GitHubRestApi.h>
 #include <GitLabRestApi.h>
+#include <QSettings>
 
 #include <Label.h>
 #include <Milestone.h>
@@ -21,10 +20,10 @@ bool GitServerCache::init(const QString &serverUrl, const QPair<QString, QString
 {
    mInit = true;
 
-   GitQlientSettings settings;
-   const auto userName = settings.globalValue(QString("%1/user").arg(serverUrl)).toString();
-   const auto userToken = settings.globalValue(QString("%1/token").arg(serverUrl)).toString();
-   const auto endpoint = settings.globalValue(QString("%1/endpoint").arg(serverUrl)).toString();
+   QSettings settings;
+   const auto userName = settings.value(QString("%1/user").arg(serverUrl)).toString();
+   const auto userToken = settings.value(QString("%1/token").arg(serverUrl)).toString();
+   const auto endpoint = settings.value(QString("%1/endpoint").arg(serverUrl)).toString();
 
    if (serverUrl.contains("github"))
       mApi.reset(new GitHubRestApi(repoInfo.first, repoInfo.second, { userName, userToken, endpoint }));

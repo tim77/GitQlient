@@ -1,14 +1,11 @@
 #include <IRestApi.h>
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
-#include <QLogger.h>
-
-using namespace QLogger;
 using namespace GitServer;
 
 IRestApi::IRestApi(const ServerAuthentication &auth, QObject *parent)
@@ -30,7 +27,7 @@ QJsonDocument IRestApi::validateData(QNetworkReply *reply, QString &errorString)
 
    if (reply->error() != QNetworkReply::NoError)
    {
-      QLog_Error("Ui", QString("Error #%1 - %2.").arg(QString::number(reply->error()), reply->errorString()));
+      emit log(QString("Error #%1 - %2.").arg(QString::number(reply->error()), reply->errorString()));
 
       errorString = reply->errorString();
 
@@ -39,7 +36,7 @@ QJsonDocument IRestApi::validateData(QNetworkReply *reply, QString &errorString)
 
    if (jsonDoc.isNull())
    {
-      QLog_Error("Ui", QString("Error when parsing Json. Current data:\n%1").arg(QString::fromUtf8(data)));
+      emit log(QString("Error when parsing Json. Current data:\n%1").arg(QString::fromUtf8(data)));
       return QJsonDocument();
    }
 
@@ -58,7 +55,7 @@ QJsonDocument IRestApi::validateData(QNetworkReply *reply, QString &errorString)
 
          errorString = message + ". " + details;
 
-         QLog_Error("Ui", errorString);
+         emit log(errorString);
 
          return QJsonDocument();
       }
@@ -67,7 +64,7 @@ QJsonDocument IRestApi::validateData(QNetworkReply *reply, QString &errorString)
    {
       errorString = jsonObject[QStringLiteral("error")].toString();
 
-      QLog_Error("Ui", errorString);
+      emit log(errorString);
 
       return QJsonDocument();
    }

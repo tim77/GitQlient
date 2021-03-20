@@ -1,20 +1,19 @@
 #include "PrChangesList.h"
 
 #include <DiffHelper.h>
-#include <GitHistory.h>
 #include <FileDiffView.h>
+#include <GitConfig.h>
+#include <GitHistory.h>
+#include <GitRemote.h>
 #include <PrChangeListItem.h>
 #include <PullRequest.h>
-#include <GitRemote.h>
-#include <GitConfig.h>
-#include <QLogger.h>
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QScrollArea>
 
 using namespace GitServer;
-using namespace QLogger;
 
 PrChangesList::PrChangesList(const QSharedPointer<GitBase> &git, QWidget *parent)
    : QFrame(parent)
@@ -26,7 +25,6 @@ PrChangesList::PrChangesList(const QSharedPointer<GitBase> &git, QWidget *parent
 
 void PrChangesList::loadData(const GitServer::PullRequest &prInfo)
 {
-   GitExecResult ret;
    bool showDiff = true;
    QString head;
 
@@ -50,7 +48,7 @@ void PrChangesList::loadData(const GitServer::PullRequest &prInfo)
             showDiff = remoteAdded.success;
 
             if (!showDiff)
-               QLog_Warning("UI", QString("Problems adding a remote: {%1}").arg(remoteAdded.output.toString()));
+               log("UI", QString("Problems adding a remote: {%1}").arg(remoteAdded.output.toString()));
          }
          else
             showDiff = false;
@@ -73,7 +71,7 @@ void PrChangesList::loadData(const GitServer::PullRequest &prInfo)
    const auto base = QString("%1/%2").arg(retBase.success ? retBase.output.toString() : "origin", prInfo.base);
 
    QScopedPointer<GitHistory> git(new GitHistory(mGit));
-   ret = git->getBranchesDiff(base, head);
+   auto ret = git->getBranchesDiff(base, head);
 
    if (ret.success)
    {

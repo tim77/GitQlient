@@ -2,18 +2,18 @@
 #include "ui_CreateIssueDlg.h"
 #include <GitHubRestApi.h>
 #include <GitLabRestApi.h>
-#include <GitQlientSettings.h>
 #include <GitServerCache.h>
 #include <Issue.h>
 
 #include <previewpage.h>
 
-#include <QMessageBox>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QFile>
-#include <QWebChannel>
 #include <QDirIterator>
+#include <QFile>
+#include <QMessageBox>
+#include <QSettings>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWebChannel>
 
 using namespace GitServer;
 
@@ -82,8 +82,8 @@ bool CreateIssueDlg::configure(const QString &workingDir)
       const auto fileContent = f.readAll();
       f.close();
 
-      GitQlientSettings settings("");
-      const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+      QSettings settings;
+      const auto colorSchema = settings.value("colorSchema", "dark").toString();
       const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
       PreviewPage *page = new PreviewPage(this);
@@ -230,8 +230,8 @@ void CreateIssueDlg::onIssueTemplateChange(int newIndex)
 
 void CreateIssueDlg::updateMarkdown(const QByteArray &fileContent)
 {
-   GitQlientSettings settings("");
-   const auto colorSchema = settings.globalValue("colorSchema", "dark").toString();
+   QSettings settings;
+   const auto colorSchema = settings.value("colorSchema", "dark").toString();
    const auto style = colorSchema == "dark" ? QString::fromUtf8("dark") : QString::fromUtf8("bright");
 
    PreviewPage *page = new PreviewPage(this);

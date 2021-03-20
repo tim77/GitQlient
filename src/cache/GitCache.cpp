@@ -1,11 +1,9 @@
 #include "GitCache.h"
 
-#include <GitHubRestApi.h>
-#include <WipRevisionInfo.h>
 #include <QLogger.h>
+#include <WipRevisionInfo.h>
 
 using namespace QLogger;
-using namespace GitServer;
 
 GitCache::GitCache(QObject *parent)
    : QObject(parent)
